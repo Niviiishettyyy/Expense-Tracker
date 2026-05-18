@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" x-data="app()" x-init="init()">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .splash-screen {
+      animation: splashFade 2s ease forwards;
+    }
+    @keyframes splashFade {
+      0% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; display: none; }
+    }
+    .login-form {
+      animation: formAppear 0.6s ease;
+    }
+    @keyframes formAppear {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body :class="themeClass()" class="min-h-screen flex items-center justify-center">
+
+  <!-- Splash Screen -->
+  <div x-show="showSplash" class="splash-screen fixed inset-0 flex items-center justify-center pointer-events-none"
+       :class="localStorage.getItem('theme')==='dark' ? 'bg-gray-900' : 'bg-gradient-to-r from-pink-100 via-purple-100 to-indigo-100'">
+    <div class="text-center">
+      <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+        💼 Expense Tracker
+      </h1>
+      <p class="text-xl" :class="localStorage.getItem('theme')==='dark' ? 'text-gray-300' : 'text-gray-700'">Track your expenses effortlessly</p>
+    </div>
+  </div>
+
+  <!-- Login Form -->
+  <div x-show="!showSplash" class="login-form shadow-lg rounded p-8 w-96 card"
+       :class="localStorage.getItem('theme')==='dark' ? 'bg-gray-800 text-white' : ''">
+    <h1 class="text-2xl font-bold text-center mb-6"
+        :class="localStorage.getItem('theme')==='dark' ? 'text-white' : 'text-indigo-700'">💼 Expense Tracker Login</h1>
+    <form @submit.prevent="login" class="space-y-4">
+      <input type="text" x-model="username" placeholder="Username"
+             class="w-full border rounded px-3 py-2"
+             :class="localStorage.getItem('theme')==='dark' ? 'bg-gray-700 text-white border-gray-600' : ''" required>
+      <input type="password" x-model="password" placeholder="Password"
+             class="w-full border rounded px-3 py-2"
+             :class="localStorage.getItem('theme')==='dark' ? 'bg-gray-700 text-white border-gray-600' : ''" required>
+      <button class="w-full py-2 rounded text-white"
+              :class="localStorage.getItem('theme')==='dark' ? 'bg-gray-600 hover:bg-gray-700' : 'bg-indigo-600 hover:bg-indigo-700'">
+        Login
+      </button>
+    </form>
+  </div>
+
+<script>
+function app() {
+  return {
+    username: '',
+    password: '',
+    showSplash: true,
+
+    init() {
+      setTimeout(() => {
+        this.showSplash = false;
+      }, 2000);
+    },
+
+   login() {
+  if(this.username && this.password){
+    localStorage.setItem('loggedIn','true');
+    localStorage.setItem('profileName', this.username); // unify here
+    window.location.href = "index.html";
+  } else {
+    alert("Enter credentials!");
+  }
+},
+
+    themeClass() {
+  switch (localStorage.getItem('themeStyle')) {
+    case 'dark': return 'theme-dark';
+    case 'light': return 'theme-light';
+    case 'sunset': return 'theme-sunset';
+    case 'ocean': return 'theme-ocean';
+    case 'forest': return 'theme-forest';
+    case 'midnight': return 'theme-midnight';
+    default: return 'theme-default';
+  }
+}
+
+  }
+}
+</script>
+</body>
+</html>

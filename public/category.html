@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" x-data="app()" x-init="init()">
+<head>
+  <meta charset="UTF-8">
+  <title>Category Breakdown</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script>
+    Chart.register(ChartDataLabels);
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body :class="themeClass()" class="flex min-h-screen">
+ <!-- Sidebar -->
+  <aside class="w-64 min-h-screen p-6 space-y-6 fixed border-r-2 transition"
+       :class="{
+  'bg-gradient-to-b from-orange-100 to-orange-200 text-orange-900 border-orange-300': themeStyle==='sunset',
+  'bg-gradient-to-b from-blue-100 to-blue-200 text-blue-900 border-blue-300': themeStyle==='ocean',
+  'bg-gradient-to-b from-green-100 to-green-200 text-green-900 border-green-300': themeStyle==='forest',
+  'bg-gradient-to-b from-gray-950 to-gray-800 text-white border-gray-800': themeStyle==='midnight',
+  'bg-gradient-to-b from-indigo-50 to-indigo-100 text-gray-800 border-indigo-200': themeStyle==='default' || themeStyle==='light',
+  'bg-gradient-to-b from-gray-900 to-gray-800 text-white border-gray-700': themeStyle==='dark'
+}">
+  <h2 class="text-2xl font-bold text-center">💼 Tracker</h2>
+  <nav class="space-y-4">
+    <a href="index.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('index.html') ? 'active' : ''">🏠 Dashboard</a>
+
+    <a href="add-expense.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('add-expense.html') ? 'active' : ''">➕ Add Expense</a>
+
+    <a href="expenses.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('expenses.html') ? 'active' : ''">📋 View Expenses</a>
+
+    <a href="category.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('category.html') ? 'active' : ''">📊 Category Breakdown</a>
+
+    <a href="settings.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('settings.html') ? 'active' : ''">⚙️ Settings</a>
+
+    <a href="logout.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('logout.html') ? 'active' : ''">🚪 Logout</a>
+  </nav>
+</aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 ml-64 page-transition">
+    <h1 class="text-3xl font-bold mb-4"
+        :class="themeStyle==='dark' ? 'text-white' : 'text-black-500'">
+      📊 Category Breakdown
+    </h1>
+
+    <!-- Chart -->
+    <div class="shadow rounded p-4 max-w-md mx-auto card">
+      <h2 class="font-semibold mb-2 text-center">Expense Categories</h2>
+      <canvas id="catChart" class="w-full max-w-xs mx-auto"></canvas>
+    </div>
+
+    <!-- Table -->
+<div class="mt-8 max-w-md mx-auto">
+  <table class="min-w-full border rounded shadow text-sm">
+    <thead class="bg-indigo-500 text-left">
+      <tr>
+        <th class="px-4 py-2">Category</th>
+        <th class="px-4 py-2">Amount</th>
+        <th class="px-4 py-2">Percentage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template x-for="(data, category) in breakdown" :key="category">
+        <tr class="border-t" style="background-color: white;">
+          <td class="px-4 py-2 font-semibold" x-text="category"></td>
+          <td class="px-4 py-2" x-text="data.amount.toFixed(2)"></td>
+          <td class="px-4 py-2" x-text="data.percent + '%'"></td>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+</div>
+
+  </main>
+
+<script>
+function app() {
+  return {
+    expenses: [],
+    breakdown: {},
+    catChart: null,
+    themeStyle: localStorage.getItem('themeStyle') || 'default',
+
+    async init() {
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = "login.html";
+  }
+  try {
+    const res = await fetch('http://localhost:3000/api/expenses'); // full URL
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    this.expenses = await res.json();
+    this.computeBreakdown();
+    this.$nextTick(() => this.drawChart());
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+}
+,
+
+    computeBreakdown() {
+      const totals = {};
+      let grandTotal = 0;
+      this.expenses.forEach(e => {
+        const amt = Number(e.amount);
+        totals[e.category] = (totals[e.category] || 0) + amt;
+        grandTotal += amt;
+      });
+
+      const result = {};
+      for (const [cat, amt] of Object.entries(totals)) {
+        result[cat] = {
+          amount: amt,
+          percent: ((amt / grandTotal) * 100).toFixed(1)
+        };
+      }
+      this.breakdown = result;
+    },
+
+    drawChart() {
+      const ctx = document.getElementById('catChart').getContext('2d');
+      if (this.catChart) this.catChart.destroy();
+
+      const labels = Object.keys(this.breakdown);
+      const values = Object.values(this.breakdown).map(d => d.amount);
+      const colors = ['#6366F1','#F59E0B','#10B981','#EF4444','#8B5CF6','#14B8A6'];
+
+      this.catChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors.slice(0, labels.length)
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom' },
+            datalabels: {
+              color: '#fff',
+              font: { weight: 'bold' },
+              formatter: (value, ctx) => {
+                let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+                return ((value / sum) * 100).toFixed(1) + "%";
+              }
+            }
+          }
+        }
+      });
+    },
+
+    themeClass() {
+      switch (this.themeStyle) {
+        case 'dark': return 'theme-dark';
+        case 'light': return 'theme-light';
+        case 'sunset': return 'theme-sunset';
+        case 'ocean': return 'theme-ocean';
+        case 'forest': return 'theme-forest';
+        case 'midnight': return 'theme-midnight';
+        default: return 'theme-default';
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>

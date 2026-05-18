@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" x-data="app()" x-init="init()">
+<head>
+  <meta charset="UTF-8">
+  <title>Logout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body :class="themeClass()" class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 min-h-screen p-6 space-y-6 fixed border-r-2 transition"
+       :class="{
+  'bg-gradient-to-b from-orange-100 to-orange-200 text-orange-900 border-orange-300': themeStyle==='sunset',
+  'bg-gradient-to-b from-blue-100 to-blue-200 text-blue-900 border-blue-300': themeStyle==='ocean',
+  'bg-gradient-to-b from-green-100 to-green-200 text-green-900 border-green-300': themeStyle==='forest',
+  'bg-gradient-to-b from-gray-950 to-gray-800 text-white border-gray-800': themeStyle==='midnight',
+  'bg-gradient-to-b from-indigo-50 to-indigo-100 text-gray-800 border-indigo-200': themeStyle==='default' || themeStyle==='light',
+  'bg-gradient-to-b from-gray-900 to-gray-800 text-white border-gray-700': themeStyle==='dark'
+}">
+  <h2 class="text-2xl font-bold text-center">💼 Tracker</h2>
+  <nav class="space-y-4">
+    <a href="index.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('index.html') ? 'active' : ''">🏠 Dashboard</a>
+
+    <a href="add-expense.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('add-expense.html') ? 'active' : ''">➕ Add Expense</a>
+
+    <a href="expenses.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('expenses.html') ? 'active' : ''">📋 View Expenses</a>
+
+    <a href="category.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('category.html') ? 'active' : ''">📊 Category Breakdown</a>
+
+    <a href="settings.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('settings.html') ? 'active' : ''">⚙️ Settings</a>
+
+    <a href="logout.html" class="block px-3 py-2 rounded"
+       :class="window.location.pathname.includes('logout.html') ? 'active' : ''">🚪 Logout</a>
+  </nav>
+</aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 ml-64 flex items-center justify-center page-transition">
+    <div class="card text-center p-8 max-w-md">
+      <h1 class="text-3xl font-bold mb-4"
+          :class="themeStyle==='dark' ? 'text-white' : 'text-indigo-700'">🚪 Logged Out</h1>
+      <p class="mb-6 text-lg"
+         :class="themeStyle==='dark' ? 'text-gray-300' : 'text-gray-600'">
+        You have successfully logged out of your account.
+      </p>
+      <a href="login.html"
+         class="btn-primary w-full text-center">
+        🔑 Login Again
+      </a>
+    </div>
+  </main>
+
+<script>
+function app() {
+  return {
+    themeStyle: localStorage.getItem('themeStyle') || 'default',
+
+    init() {
+      localStorage.removeItem('loggedIn');
+    },
+
+    themeClass() {
+      switch (this.themeStyle) {
+        case 'dark': return 'theme-dark';
+        case 'light': return 'theme-light';
+        case 'sunset': return 'theme-sunset';
+        case 'ocean': return 'theme-ocean';
+        case 'forest': return 'theme-forest';
+        case 'midnight': return 'theme-midnight';
+        default: return 'theme-default';
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>

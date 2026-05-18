@@ -1,0 +1,239 @@
+/* Global body styles */
+body {
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* 🎨 Theme Styles */
+.theme-light {
+  background-color: #ffffff !important;
+  color: #111827 !important; /* Tailwind gray-900 */
+}
+
+.theme-dark {
+  background-color: #111827 !important; /* Tailwind gray-900 */
+  color: #f9fafb !important;            /* Tailwind gray-50 */
+}
+
+.theme-default {
+  background: linear-gradient(-45deg, #fbcfe8, #c7d2fe, #a5b4fc, #fef3c7) !important;
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+  color: black;
+}
+
+.theme-sunset {
+  background: linear-gradient(to right, #fed7aa, #fbcfe8, #fca5a5) !important;
+  color: black;
+}
+
+.theme-ocean {
+  background: linear-gradient(to right, #cffafe, #bfdbfe, #a5b4fc) !important;
+  color: black;
+}
+
+.theme-forest {
+  background: linear-gradient(to right, #dcfce7, #a7f3d0, #5eead4) !important;
+  color: black;
+}
+
+.theme-midnight {
+  background: linear-gradient(to right, #e0e7ff, #e9d5ff, #fbcfe8) !important;
+  color: black;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sidebar */
+aside {
+  transition: background-color 0.3s ease;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+
+/* Sidebar nav styling (light vs dark handled by theme classes) */
+aside nav a {
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+aside nav a:hover {
+  background-color: rgba(255,255,255,0.4);
+}
+
+aside nav a.active {
+  background-color: #4f46e5;
+  color: white;
+  font-weight: bold;
+}
+
+/* Headings */
+h1, h2, h3 {
+  letter-spacing: 0.5px;
+}
+
+/* Neon glow in dark mode */
+.theme-dark h1,
+.theme-dark h2 {
+  text-shadow: 0 0 8px rgba(99,102,241,0.8);
+}
+
+.theme-dark .btn-primary {
+  box-shadow: 0 0 10px rgba(139,92,246,0.7);
+}
+
+/* Buttons */
+button,
+a.button {
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover,
+a.button:hover {
+  transform: translateY(-1px);
+}
+
+/* Gradient primary buttons */
+.btn-primary {
+  background: linear-gradient(to right, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+}
+
+/* Playful toggle pulse */
+.toggle-btn {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(99,102,241,0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(99,102,241,0); }
+  100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+}
+
+/* Cards with glassmorphism */
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.theme-dark .card {
+  background: rgba(31, 41, 55, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f9fafb;
+}
+
+/* Inputs & Selects */
+input,
+select {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-dark input,
+.theme-dark select {
+  background-color: #374151; /* Tailwind gray-700 */
+  color: #f9fafb;
+  border-color: #4b5563;     /* Tailwind gray-600 */
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+  padding: 0.5rem;
+}
+
+.theme-dark th,
+.theme-dark td {
+  border-color: #374151; /* Tailwind gray-700 */
+}
+
+/* Table row striping */
+tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.theme-dark tbody tr:nth-child(even) {
+  background-color: #1f2937;
+}
+
+/* Expense entry animation */
+tbody tr {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Sidebar active link highlight */
+nav a.active {
+  background-color: #4f46e5;
+  font-weight: bold;
+}
+
+.theme-dark nav a.active {
+  background-color: #374151;
+}
+
+/* Sidebar hover float */
+nav a {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+nav a:hover {
+  transform: translateX(5px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6366f1; /* indigo */
+  border-radius: 4px;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: #4b5563; /* gray */
+}
+
+/* Page transitions */
+.page-transition {
+  animation: fadeSlide 0.6s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Category accent colors */
+.category-food         { color: #22c55e; }
+.category-transport    { color: #3b82f6; }
+.category-entertainment{ color: #ec4899; }
+.category-bills        { color: #f97316; }
+.category-misc         { color: #6b7280; }
